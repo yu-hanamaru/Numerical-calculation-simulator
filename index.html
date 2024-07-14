@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数値計算シミュレータ</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <h1>数値計算シミュレータ(例：f(x)=x^3－x－2)</h1>
+    <div class="container">
+        <div class="settings">
+            <h2>設定</h2>
+            <label for="method">アルゴリズム選択:</label>
+            <select id="method" onchange="updateMethodSettings()">
+                <option value="bisection">二分法</option>
+                <option value="newton">ニュートン法</option>
+            </select>
+            <div id="bisection-settings">
+                <label for="a">区間左端 (a):</label>
+                <input type="range" id="a" min="-10" max="10" step="0.1" value="-5" oninput="updateValue('a')">
+                <span id="a-value">-5</span>
+                <label for="b">区間右端 (b):</label>
+                <input type="range" id="b" min="-10" max="10" step="0.1" value="5" oninput="updateValue('b')">
+                <span id="b-value">5</span>
+            </div>
+            <div id="newton-settings" style="display: none;">
+                <label for="x0">初期値 (x0):</label>
+                <input type="range" id="x0" min="-10" max="10" step="0.1" value="0" oninput="updateValue('x0')">
+                <span id="x0-value">0</span>
+            </div>
+            <label for="epsilon">許容誤差 (ε):</label>
+            <input type="range" id="epsilon" min="0.0001" max="0.01" step="0.0001" value="0.001" oninput="updateValue('epsilon')">
+            <span id="epsilon-value">0.001</span>
+            <label for="max-iterations">最大反復回数:</label>
+            <input type="range" id="max-iterations" min="10" max="100" step="1" value="50" oninput="updateValue('max-iterations')">
+            <span id="max-iterations-value">50</span>
+            <br>
+            <button onclick="startSimulation()">計算開始</button>
+            <button onclick="reset()">リセット</button>
+            
+            <div id="method-explanation">
+                <div id="bisection-explanation">
+                    <h3>二分法</h3>
+                    <p>二分法は、関数 \( f(x) \) の異符号の2点 \( a \) と \( b \) の間に根があることを利用して根を探す方法です。反復的に区間を半分に分けることで収束していきます。</p>
+                    <p>数式:</p>
+                    \[
+                    f(x) = 0
+                    \]
+                    \[
+                    a < b \quad \text{で} \quad f(a) \cdot f(b) < 0
+                    \]
+                    \[
+                    c = \frac{a + b}{2} \quad \text{で} \quad f(c) = 0 \quad \text{または}
+                    \]
+                    \[
+                     \quad f(a) \cdot f(c) < 0 \quad \text{または} \quad f(c) \cdot f(b) < 0
+                    \]
+                </div>
+                <div id="newton-explanation" style="display: none;">
+                    <h3>ニュートン法</h3>
+                    <p>ニュートン法は、関数 \( f(x) \) の近似的な根を見つける方法で、関数の導関数 \( f'(x) \) を利用します。初期値からスタートし、反復的に更新することで収束します。</p>
+                    <p>数式:</p>
+                    \[
+                    f(x) = 0
+                    \]
+                    \[
+                    x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+                    \]
+                </div>
+            </div>
+        </div>
+        <div class="graph">
+            <h2>グラフ表示</h2>
+            <canvas id="graph-canvas" width="500" height="375"></canvas>
+            <div id="calculation-time"></div>
+        </div>
+    </div>
+    <script src="simulator.js"></script>
+</body>
+</html>
